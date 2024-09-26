@@ -1,0 +1,8 @@
+#-[ IGNORED AS CONTENTS WILL BE UNIQUE WRT USER MACHINE ]----------------------#
+.vscode/
+build/assets/target.json
+build/EiSpriteViewer.jar
+outputs/
+
+#-[ IGNORING OLD EXAMPLE/TEST FILES, AS NOW USING REAL ONES VIA TARGET ]-------#
+examples/

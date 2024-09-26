@@ -1,0 +1,2 @@
+# to (hopefully) help assert that we don't want Mikeysoft's CLRF wickedness here
+* text=auto eol=lf
