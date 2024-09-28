@@ -25,8 +25,11 @@ public class SpriteUtils {
   private static final boolean HANDLE_NON_POS_TIC_LENS = false;
 
 
-  /** Default <code>maxDepth</code> for <code>Files.find(...)</code> operations. */
-  private static final int FIND_MAX_DEPTH = 2;
+  /** 
+   * Default <code>maxDepth</code> for <code>Files.find(...)</code> operations.
+   * @implNote currently <code>[8]</code> to account for reasonable nested dirs
+   */
+  private static final int FIND_MAX_DEPTH = 8;
 
   /** EXPECTED dir of which contains brightmaps sprites.  */
   private static final String BMAP_DIR = "BRIGHTMAPS";
@@ -74,6 +77,14 @@ public class SpriteUtils {
   }
 
 
+  public static String[] animClipsToClipNames(SpriteClip[] clips){
+    String[] ret = new String[clips.length];
+    for(int i=0; i<clips.length; i++){
+      ret[i] = clips[i].getClipName();
+    } 
+    return ret;
+  }
+
 
 
 
@@ -115,11 +126,16 @@ public class SpriteUtils {
 
 
   /** @todo TEST THIS */
-  public static SpriteClip[] getAllSpriteClipsOf(AppUtils appUtils, JSONObject allStates){
-    String[] stateNames = DataStructUtils.keyArrayOfJSONObj(allStates);
+  public static SpriteClip[] getAllSpriteClipsOf(AppUtils au){
+    String[] stateNames = DataStructUtils.keyArrayOfJSONObj(au.JO_STATE_ANIMS);
+    
+    
     int nStates = stateNames.length;
     SpriteClip[] allClips = new SpriteClip[nStates];
-    for (int i=0; i<nStates; i++){allClips[i] = rawStateDefToSpriteClip(appUtils, stateNames[i],allStates);}
+    for (int i=0; i<nStates; i++){
+      allClips[i] = rawStateDefToSpriteClip(au, stateNames[i],au.JO_STATE_ANIMS);
+    }
+  
     return allClips;
   }
 

@@ -77,17 +77,12 @@ public class SpriteGroupPlayer {
 
 
 
+
   public void renderSprite(){
-    if(spriteGroup==null||spriteGroup.spriteDict==null){
-      Cons.err(Err.NULL_VALUE);
-      System.err.print("The following are null: ");
-      //AppUtils.printIfNull(spriteGroup, "spriteGroup ");
-      //AppUtils.printIfNull(spriteGroup.spriteDict, "spriteDict");   
+
+    if(spriteGroup==null||spriteGroup.sprDict==null||spriteGroup.curClip==null){ 
       return;
     }
-
-    if(spriteGroup.curClip==null){return;}
-
 
     curSprite = spriteGroup.getCurSpriteObj();
     //if(curSprite==null){System.err.println("um..."); return;}    

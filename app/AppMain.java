@@ -29,6 +29,7 @@ public class AppMain  extends PApplet {
   public  static FPSManager fpsManager;
   public  static AppBar appBar;
   public  static CustomCursor custCursor;
+  public  static SpriteGroupPlayer player;
 
   public static void main(String[] args) {
     PApplet.main("app.AppMain");
@@ -40,26 +41,20 @@ public class AppMain  extends PApplet {
   }
 
 
+  /** @implNote <b>REMEMBER: ORDER ABSOLUTELY MATTERS HERE!!!</b> */
   public void setup(){
     noCursor();
     FILL_CANVAS = color(0);
 
     initAssetPath();
     loadAppAssets();
-    appUtil = new AppUtils(this);
-
-
-    appUtil.setup();
-
-
-
-    AppMain.fpsManager  = new FPSManager(this).bindFont(AppMain.TXTFONT);
-    AppMain.hudManager  = new HUDManager(this);
-    AppMain.appBar      = new AppBar(this,AppMain.APPLOGO, AppMain.EISLOGO);
-    AppMain.custCursor  = new CustomCursor(this);
-    AppMain.appGUI      = new AppGUI(AppMain.appUtil, AppMain.TXTFONT, AppMain.SYMFONT);
-
-    appUtil.getSpritePlayer().run();
+    appUtil    = new AppUtils(this);
+    fpsManager = new FPSManager(this).bindFont(TXTFONT);
+    hudManager = new HUDManager(this);
+    appBar     = new AppBar(this, APPLOGO, EISLOGO);
+    custCursor = new CustomCursor(this);
+    player     = new SpriteGroupPlayer(this);
+    appGUI     = new AppGUI(appUtil, TXTFONT, SYMFONT);
     println("Processing Function [setup] Successfully Executed");
   }
 
@@ -73,15 +68,16 @@ public class AppMain  extends PApplet {
   /** @implNote per usual... <b>ORDER <i>(likely)</i> COUNTS!</b> */
   public void update(){
     appGUI.update();
-    appUtil.update();
+    player.update();
     custCursor.update();
   }
+
   /** @implNote per usual... <b>ORDER COUNTS!</b> */
   public void render(){
     background(FILL_CANVAS);
     appBar.render();
     hudManager.render();
-    appUtil.render();
+    player.render();
     fpsManager.dispFPS();
     appGUI.render();
     custCursor.render();
@@ -93,7 +89,7 @@ public class AppMain  extends PApplet {
 
   public void keyPressed(){
     switch(key){case 'q' : case 'Q': exit(); return;}
-    appUtil.onKeyPressed();
+    player.onKeyPressed();
   }
 
   public void mouseWheel(MouseEvent e){
@@ -101,13 +97,17 @@ public class AppMain  extends PApplet {
   }
 
 
+  public void onLoadTargetSelect(File f){
+    appUtil.onSelectionMade(f);
+  }
+
   /** Loads GUI fonts, images, etc.; i.e. NOT app targets! */
   public void loadAppAssets(){
-    AppMain.TXTFONT = loadFont(fullpathOf(ResPath.TXTFONT));
-    AppMain.SYMFONT = loadFont(fullpathOf(ResPath.SYMFONT));
-    AppMain.APPICON = loadImage(fullpathOf(ResPath.APPICON));
-    AppMain.APPLOGO = loadImage(fullpathOf(ResPath.APPLOGO));
-    AppMain.EISLOGO = loadImage(fullpathOf(ResPath.EISLOGO));
+    TXTFONT = loadFont(fullpathOf(ResPath.TXTFONT));
+    SYMFONT = loadFont(fullpathOf(ResPath.SYMFONT));
+    APPICON = loadImage(fullpathOf(ResPath.APPICON));
+    APPLOGO = loadImage(fullpathOf(ResPath.APPLOGO));
+    EISLOGO = loadImage(fullpathOf(ResPath.EISLOGO));
   }
 
 
@@ -118,16 +118,16 @@ public class AppMain  extends PApplet {
 
     //=[ 'PRODUCTION MODE' CASE (I.E. STANDALONE LAUNCHED BY USER) ]============
     f = new File(FileSysUtils.pathConcat(sketchPath(), ad));
-    if (f.exists() && f.isDirectory()){AppMain.assetPath = f.getAbsolutePath();}
+    if (f.exists() && f.isDirectory()){assetPath = f.getAbsolutePath();}
     
     //=[ 'DEVELOPMENT MODE' CASE (I.E. DEBUG LAUNCHED BY VSCODE) ]==============
     f = new File(FileSysUtils.pathConcat(sketchPath(), bd, ad));
-    if (f.exists() && f.isDirectory()){AppMain.assetPath = f.getAbsolutePath();}
+    if (f.exists() && f.isDirectory()){assetPath = f.getAbsolutePath();}
   }
 
   /** Returns path concat of {@link #assetPath} with input subpath therefrom. */
   public static String fullpathOf(ResPath sp){
-    return FileSysUtils.pathConcat(AppMain.assetPath,sp.get());
+    return FileSysUtils.pathConcat(assetPath,sp.get());
   }
 
 }

@@ -21,7 +21,6 @@ import PrEis.gui.UIContainer;
 import PrEis.gui.UIDropdown;
 import PrEis.gui.UILabel;
 import PrEis.gui.UIManager;
-import PrEis.gui.UIObject;
 import PrEis.gui.UIToggle;
 import PrEis.gui.PosOri;
 
@@ -33,6 +32,9 @@ public class AppGUI {
 
   PFont labelFont;
   PFont glyphFont;
+
+
+  UIDropdown statesDDown;
 
   public AppGUI(AppUtils iAppUtils, PFont iLabelFont, PFont iGlyphFont){
     appUtil   = iAppUtils;
@@ -62,13 +64,14 @@ public class AppGUI {
   public void onMousePressed(){uim.onMousePressed();}
   public void onMouseWheel(int v){uim.onMouseWheel(v);}
 
-  /**
-   * @todo {@link UIContainer}, {@link UIManager}, and {@link UIObject} need to
-   * be reimplemented WRT each other as to appropriately handle how containers
-   * bind, update, render, etc. their children; as it's fuckall right now. The
-   * current situ (i.e. containers are invisible to manager) should thankfully
-   * not be breaking at this time... but they <b>WILL</b> break eventually.
-   */
+
+  public void addOptionsToDropdown(){
+    StringList states = new StringList(SpriteUtils.animClipsToClipNames(appUtil.curAnimClips));
+    states.sort();
+    statesDDown.addOptions(states.toArray(null));
+  }
+
+
   public void loadUIOBjects(){
     float xOff = 0; 
     float yOff = 0;
@@ -93,17 +96,17 @@ public class AppGUI {
 
       UIClick.create(app, bbox(vec(xOff+=eWid+xPad,yOff), vec(eWid,eDim)),
         glyphChar("gStop"), AppFont.GLYPH,
-        new PlayerStopAction(appUtil)
+        new PlayerStopAction()
       ).setTitle("Stops Anim Clip Playback & Goes To First Frame").castTo(UIClick.class),
 
       UIClick.create(app, bbox(vec(xOff+=eWid+xPad,yOff), vec(eWid,eDim)),
         glyphChar("gPlay"), AppFont.GLYPH,
-        new PlayerPlayAction(appUtil)
+        new PlayerPlayAction()
       ).setTitle("[Re]Starts Anim Clip Playback").castTo(UIClick.class),
 
       UIToggle.create(app, bbox(vec(xOff+=eWid+xPad,yOff), vec(eWid,eDim)),
         glyphChar("gPause"), AppFont.GLYPH,
-        new PlayerPauseAction(appUtil)
+        new PlayerPauseAction()
       ).setTitle("Pauses Anim Clip Playback").castTo(UIToggle.class),
   
       UIClick.create(app, bbox(vec(xOff+=eWid+xPad,yOff), vec(eWid,eDim)),
@@ -191,12 +194,7 @@ public class AppGUI {
     xOff = app.width - eWid - 32;
     yOff = AppMain.appBar.getTopBarYOff()+32;
 
-
-    StringList states = new StringList(appUtil.curSpriteGroup.getAllStateNames());
-    states.sort();
-
-    UIDropdown.create(uim, new BBox(xOff, yOff, eWid, eDim))
-    .addOptions(states.toArray(null)) 
+    statesDDown = UIDropdown.create(uim, new BBox(xOff, yOff, eWid, eDim))
     .bindAction(new DropdownSelectAnim(appUtil));
 
 
@@ -232,8 +230,30 @@ public class AppGUI {
     .setTitle("Click Twice To Exit App")
     ;
 
+  //=[LOAD TARGET BUTTON]==================================================================
+
+    class LoadTargetAction implements IActionCallback {
+      @Override public void action() {
+        app.selectInput("Load Target", "onLoadTargetSelect");
+      }
+    }
+
+    UIClick.create(
+      uim,
+      bbox(vec(AppMain.CANVAS_WIDE-360,8), vec(160,40)),
+      "Load Target",
+      AppFont.TEXT,
+      new LoadTargetAction()
+    )
+    .setStyleProp("fill",          Integer.class, app.color(0, 112,   0))
+    .setStyleProp("fill_hovered",  Integer.class, app.color(0, 144,   0))
+    .setStyleProp("fill_clicked",  Integer.class, app.color(0, 176,   0))
+    .setStyleProp("fill_disabled", Integer.class, app.color(0,  80,   0))
+    ;
   }
 }
+
+
 
 
 /*=[ CALLBACK DEFS - KEEP THESE, AND WITHIN THIS FILE! ]======================*/
@@ -251,31 +271,16 @@ class DropdownSelectAnim implements ISelectAction {
 }
 
 class PlayerPauseAction implements IToggleCallback {
-  private AppUtils appUtils;
-  public PlayerPauseAction(AppUtils iAppUtils){appUtils=iAppUtils;}
-  public boolean getState(){return appUtils.spritePlayer.paused;}
-  public void toggleState(){
-    if(!appUtils.hasSpritePlayer()){return;}
-    appUtils.spritePlayer.onPause();
-  }
+  public boolean getState(){return (AppMain.player!=null) ? AppMain.player.paused : false;}
+  public void toggleState(){if(AppMain.player!=null){AppMain.player.onPause();}}
 }
 
 class PlayerPlayAction implements IActionCallback {
-  private AppUtils appUtils;
-  public PlayerPlayAction(AppUtils iAppUtils){appUtils=iAppUtils;}
-  public void action(){
-    if(!appUtils.hasSpritePlayer()){return;}
-    appUtils.spritePlayer.onPlay();
-  }
+  public void action(){if(AppMain.player!=null){AppMain.player.onPlay();}}
 }
 
 class PlayerStopAction implements IActionCallback {
-  private AppUtils appUtils;
-  public PlayerStopAction(AppUtils iAppUtils){appUtils=iAppUtils;}
-  public void action(){
-    if(!appUtils.hasSpritePlayer()){return;}
-    appUtils.spritePlayer.onStop();
-  }
+  public void action(){if(AppMain.player!=null){AppMain.player.onStop();}}
 }
 
 class NextClipAction implements IActionCallback {

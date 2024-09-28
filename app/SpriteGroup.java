@@ -1,11 +1,10 @@
 package app;
 import java.util.HashMap;
 
-import processing.core.PApplet;
 import processing.core.PVector;
+import processing.data.JSONObject;
 import processing.data.StringList;
 import PrEis.utils.Cons;
-import PrEis.utils.FileSysUtils;
 import PrEis.utils.StringUtils;
 import PrEis.utils.Cons.Act;
 import PrEis.utils.Cons.Err;
@@ -13,75 +12,73 @@ import PrEis.utils.Cons.Err;
 public class SpriteGroup {
   String fileName;
   String filePath;
-  String offsPath;
   SpriteClip[] animClips;
   SpriteClip curClip;
   int curClipIdx;
   String[] allSpritePKIDs;
-  HashMap<String,Sprite> spriteDict;
+  HashMap<String,Sprite> sprDict;
+  AppUtils appUtil;
 
-  PApplet app;
-  AppUtils appUtils;
+  public SpriteGroup(AppUtils iAppUtils){
+    sprDict = new HashMap<String,Sprite>();
+    appUtil = iAppUtils;
+  }
 
-  public SpriteGroup(AppUtils iAppUtils, String in_filePath, String in_offsPath){
-    spriteDict     = new HashMap<String,Sprite>();
-    appUtils       = iAppUtils;
-    app            = appUtils.app;
-    filePath       = in_filePath;
-    fileName       = FileSysUtils.fnameFromFpath(in_filePath,false);
-    offsPath       = in_offsPath;
-    animClips      = SpriteUtils.getAllSpriteClipsOf(appUtils, app.loadJSONObject(filePath));
-    allSpritePKIDs = getAllSpritePKIDs();
+  public SpriteGroup initializeΘ(SpriteClip[] anims, JSONObject sprOffs){
+    initialize(anims, null); return this;
+  }
+
+  public void initialize(SpriteClip[] anims, JSONObject sprOffs){
+    //> REMEMBER: ORDER COUNTS!
+    reset();
+    animClips = anims;
+    getAllSpritePKIDs();
     installSprites();
     installOffsets();
-    reset();
+    firstClip();
   }
 
-  //> and now we get to the climax of this project! (well, one of the big'gunz, anyway...)
-  public SpriteGroup installSprites(){
-    if(allSpritePKIDs==null || allSpritePKIDs.length==0){
-      Cons.err(Err.NULL_VALUE);
+
+  private void installSprites(){    
+    if(allSpritePKIDs==null || allSpritePKIDs.length==0){Cons.err(Err.NULL_VALUE);}
+    else{for (String pkid : allSpritePKIDs){sprDict.put(pkid,SpriteUtils.spriteWithName(appUtil, pkid));}
     }
-    else{
-      for (String pkid : allSpritePKIDs){
-        spriteDict.put(pkid,SpriteUtils.spriteWithName(appUtils, pkid));
-      }
-    }
-    return this; // for function chaining
   }
   
-  public SpriteGroup installOffsets(){
+  public void installOffsets(){
+    if(appUtil.JO_SPRITE_OFFS==null){
+      Cons.warn("called `installOffset` but none are installed");
+      Cons.act(Act.RETURN_NO_ACTION);
+      return;
+    }
 
-    HashMap<String,PVector> loadedOffs = SpriteUtils.offsetJSONToOffsetMap(
-      FileSysUtils.loadJSONObjNullFail(app,offsPath));
+    HashMap<String,PVector> offs = SpriteUtils.offsetJSONToOffsetMap(appUtil.JO_SPRITE_OFFS);
 
-    //> harmless pass if `offs` happens to be nullish  
-    if(loadedOffs==null){return null;} 
     PVector buffVec;
     Sprite buffSpr;
     for(String s : allSpritePKIDs){
-      buffVec = loadedOffs.get(s);     
+      buffVec = offs.get(s);     
       if (buffVec==null){
         Cons.warn("Offset cannot be found for sprite '"+s+"'. Leaving at init value i.e. {0,0}");
       }
       else {
-        buffSpr = spriteDict.get(s);
+        buffSpr = sprDict.get(s);
         if(buffSpr==null){Cons.err(Err.NULL_VALUE);}
         else{buffSpr.setOff(buffVec);}
       }
     }
-    return this; // for function chaining
+
   }
  
   public SpriteGroup extractOffsets(){
     PVector buffVec; Sprite buffSpr;
     for(String s : allSpritePKIDs){
-      buffVec = SpriteUtils.extractSpriteOffset(appUtils, s); 
+      buffVec = SpriteUtils.extractSpriteOffset(appUtil, s); 
       if(buffVec==null){
         Cons.warn("Warning: Offset cannot be found for sprite '"+s+"'. Leaving at init value i.e. {0,0}");
       }
       else{
-        buffSpr = spriteDict.get(s);
+        buffSpr = sprDict.get(s);
         if(buffSpr==null){Cons.err(Err.NULL_VALUE);}
         else{buffSpr.setOff(buffVec);}
       }
@@ -156,12 +153,12 @@ public class SpriteGroup {
     if(
       allSpritePKIDs==null     ||
       allSpritePKIDs.length==0 ||
-      spriteDict==null         ||
-      spriteDict.size()==0     ){
+      sprDict==null         ||
+      sprDict.size()==0     ){
       Cons.err_act(Err.NULL_VALUE, Act.RETURN_NULL);
       return null;
     }
-    Sprite s = spriteDict.get(getCurSpriteName());
+    Sprite s = sprDict.get(getCurSpriteName());
 
     return s;
   }
@@ -182,13 +179,13 @@ public class SpriteGroup {
   }
 
   //> Returns `String[]` of all unique sprite names/IDs (i.e. no dupes, plz!)
-  public String[] getAllSpritePKIDs(){
+  public void getAllSpritePKIDs(){
     StringList all_pkids = new StringList(); String[] buff_pkids;
     for (SpriteClip clip : animClips){
       buff_pkids = clip.getAllSpritePKIDs();
       for (String pkid : buff_pkids){all_pkids.appendUnique(pkid);}
     }
-    return all_pkids.toArray();
+    allSpritePKIDs = all_pkids.toArray();
   }
   
   public String[] getAllStateNames(){

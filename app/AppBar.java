@@ -11,7 +11,7 @@ import processing.core.PImage;
  */
 public class AppBar {
 
-  /** {@link PApplet} of app via {@link #appUtils} for efficiently direct GFX function calls. */
+  /** {@link PApplet} of app via {@link #appUtil} for efficiently direct GFX function calls. */
   private PApplet app;
 
   /** BG fill color of top and bottom app bars. */

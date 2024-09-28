@@ -24,6 +24,12 @@ public enum ResPath {
   /** Filename of Eis logo (i.e. within {@link #ASSETDIR}). */
   EISLOGO("eis_logo.png"),
 
+  //-[ TARGET JSON PROPS ]-----------------------------------------------------#
+  SPRITE_PATH,
+  BRIGHT_PATH,
+  SPRITE_OFFS,
+  STATE_ANIMS,
+
   STUB; //> exists only for semicolon, lol ;-)
 
   private String sPath;
