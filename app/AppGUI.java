@@ -183,7 +183,7 @@ public class AppGUI {
     yPad = 8; eDim = 48;
 
     UIContainer.create(
-      uim, bbox(vec(AppMain.CANVAS_WIDE-56,AppMain.CANVAS_TALL-256), vec(eDim,232))
+      uim, bbox(vec(AppMain.CANVAS_WIDE-56,AppMain.CANVAS_TALL-320), vec(eDim,232))
     ).addChildren(
       UILabel.create(app, bbox(vec(0,yOff), vec(eDim,eDim)),
         null, AppFont.TEXT, LabelType.OP, new DispZoomLevAction(AppMain.hudManager)
@@ -210,8 +210,8 @@ public class AppGUI {
     );
 
 
-  //=[STATES BUTTONS GROUP]=========================================================
-    eWid = 160;
+  //=[STATES DROPDOWN GROUP]====================================================
+    eWid = 256;
     eDim = 320;
     xOff = app.width - eWid - 32;
     yOff = AppMain.appBar.getTopBarYOff()+32;
@@ -220,7 +220,7 @@ public class AppGUI {
     .bindAction(new DropdownSelectAnim(appUtil));
 
 
-  //=[FPS BUTTON GROUP]=============================================================
+  //=[FPS BUTTON GROUP]=========================================================
     eDim = 48; xPad = 8; xOff = 0;
 
 

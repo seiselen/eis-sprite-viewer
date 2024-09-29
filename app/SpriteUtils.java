@@ -2,11 +2,15 @@ package app;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import PrEis.utils.Cons;
 import PrEis.utils.DataStructUtils;
+import PrEis.utils.ExtType;
+import PrEis.utils.FileSysUtils;
+import PrEis.utils.FileWriteUtil;
 import PrEis.utils.FormatUtils;
 import PrEis.utils.StringUtils;
 import processing.core.PApplet;
@@ -35,9 +39,35 @@ public class SpriteUtils {
   private static final String BMAP_DIR = "BRIGHTMAPS";
 
 
+  /** 
+   * Unexpected standalone sp offset extract util.
+   * @todo Port to `PrEis` (with rest of offset utils functs?) for future use 
+   * within tiny standalone applet.
+   */
+  public static void extractAllSpriteOffsetsIn(AppUtils au, String dp, String op){
+    Path sp = Paths.get(dp);
+    FileSysUtils.DEF_FIND_LEV = 8;
+    String [] spFNs = FileSysUtils.fileNamesOfDir(dp,ExtType.PNG);
+    FileSysUtils.DEF_FIND_LEV = 1;
+    for(int i=0; i<spFNs.length; i++){spFNs[i] = FileSysUtils.fnameFromFpath(spFNs[i],false);}
+    PVector pv;
+    FileWriteUtil writer = new FileWriteUtil(au.app);
+    writer.launchWrite(FileSysUtils.pathConcat(op,"revSpOffs.txt"));
+    for(String fn : spFNs){
+      pv = extractSpriteOffset(au, sp, fn);
+      if(pv!=null){writer.writeToFile(fn+": "+StringUtils.wrapParens(pv.x+", "+pv.y));}
+    }
+    writer.finishWrite();
+  }
 
+
+  //> Messy, I know. Need a QAD means of manually spec'ing the sprite dp ATM.
   public static PVector extractSpriteOffset(AppUtils aUtils, String sName){
-    String sprPath = findSprite(aUtils.getSpriteDirpath(), sName)[0];
+    return SpriteUtils.extractSpriteOffset(aUtils, aUtils.getSpriteDirpath(), sName);
+  }
+
+  public static PVector extractSpriteOffset(AppUtils aUtils, Path spriteDP, String sName){
+    String sprPath = findSprite(spriteDP, sName)[0];
     byte[] byteArr = aUtils.app.loadBytes(sprPath);
     int offStartIdx = -1;
     for(int i=0; i<byteArr.length; i++){if(findOffsetIdxStart(byteArr,i)){offStartIdx=i+4; break;}}
@@ -160,7 +190,7 @@ public class SpriteUtils {
 
   /** @todo TEST THIS */
   public static String[] frameLineToSpriteArray(AppUtils aUtil, String line){  
-    String[] components = line.trim().split("\\s+");
+    String[] components = line.trim().split("/s+");
     if(components.length != 3){return conserr_exp3CompDECStr(line);}
     String prefixStr = components[0];
     char[] suffixArr = components[1].toCharArray();
