@@ -2,6 +2,7 @@ package app;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import PrEis.utils.Cons;
 import PrEis.utils.Cons.Act;
 import processing.core.PApplet;
@@ -32,6 +33,17 @@ public class AppUtils {
     Cons.err("onSelectionMade - "+msg); Cons.act(Act.RETURN_NO_ACTION);  
   }
 
+  public void resetSelectionState(){
+    curAnimClips   = null;
+    curSpriteGroup = null;
+    curExtractOffs = false;
+    DP_SPRITES     = null;
+    DP_BRIGHTS     = null;
+    JO_STATE_ANIMS = null;
+    JO_SPRITE_OFFS = null;
+    JO_CUR_TARGET  = null;
+    AppMain.appGUI.clearDropdownOptions();
+  }
 
   /** 
    * This is either the callback to `selectInput` else called thereby. Expected
@@ -39,12 +51,8 @@ public class AppUtils {
    * @implNote <b>ORDER <i>(likely)</i> COUNTS!</b> 
    */
   public void onSelectionMade(File sel){
-    //> TODO: put these into `reset` function as with `SpriteGroup`
-    curSpriteGroup = null;
-    curAnimClips = null;
-    curExtractOffs = false;
-
-
+    resetSelectionState();
+    
     //-[ GET SELECTED TARGET JSON OBJ ]----------------------------------------#
     handle_JO_CUR_TARGET(sel);
     if(JO_CUR_TARGET==null){onSelErr("JSON was loaded but is somehow null"); return;}
@@ -68,10 +76,7 @@ public class AppUtils {
     AppMain.appGUI.addOptionsToDropdown();
 
     curSpriteGroup = new SpriteGroup(this)
-    .initializeΘ(
-      curAnimClips,
-      JO_SPRITE_OFFS
-    );
+    .initializeΘ(curAnimClips, JO_SPRITE_OFFS);
 
     if(curExtractOffs){
       System.out.println("Attention: Extracting sprite offsets!");

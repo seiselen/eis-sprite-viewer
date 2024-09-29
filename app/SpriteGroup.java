@@ -24,17 +24,17 @@ public class SpriteGroup {
     appUtil = iAppUtils;
   }
 
-  public SpriteGroup initializeΘ(SpriteClip[] anims, JSONObject sprOffs){
-    initialize(anims, null); return this;
+  public SpriteGroup initializeΘ(SpriteClip[] in_animClips, JSONObject in_spriteOffs){
+    initialize(in_animClips, in_spriteOffs); return this;
   }
 
-  public void initialize(SpriteClip[] anims, JSONObject sprOffs){
+  public void initialize(SpriteClip[] in_animClips, JSONObject in_spriteOffs){
     //> REMEMBER: ORDER COUNTS!
     reset();
-    animClips = anims;
+    animClips = in_animClips;
     getAllSpritePKIDs();
     installSprites();
-    installOffsets();
+    if (in_spriteOffs!=null){installOffsets(in_spriteOffs);}
     firstClip();
   }
 
@@ -45,14 +45,8 @@ public class SpriteGroup {
     }
   }
   
-  public void installOffsets(){
-    if(appUtil.JO_SPRITE_OFFS==null){
-      Cons.warn("called `installOffset` but none are installed");
-      Cons.act(Act.RETURN_NO_ACTION);
-      return;
-    }
-
-    HashMap<String,PVector> offs = SpriteUtils.offsetJSONToOffsetMap(appUtil.JO_SPRITE_OFFS);
+  public void installOffsets(JSONObject inOffs){
+    HashMap<String,PVector> offs = SpriteUtils.offsetJSONToOffsetMap(inOffs);
 
     PVector buffVec;
     Sprite buffSpr;
@@ -148,6 +142,14 @@ public class SpriteGroup {
     if(curClip==null){return "N/A";}
     return curClip.getCurSpriteName();  
   }
+
+  public String getCurSpriteOff(){
+    if(curClip==null){return "N/A";}
+    //> RISKY as no `null` protection because I'm too stupid to def a local var
+    return sprDict.get(getCurSpriteName()).offToString();
+  }
+
+
 
   public Sprite getCurSpriteObj(){
     if(

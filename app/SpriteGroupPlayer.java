@@ -14,10 +14,7 @@ public class SpriteGroupPlayer {
   
   //> Maybe Temp, Maybe I Keep For Debug Purposes...
   Sprite curSprite;
-    
-  public static final String BLURB_CURCLIP = "Clip:";
-  public static final String BLURB_CURSPRITE = "Sprite:";
- 
+  
   PApplet app;
     
   public SpriteGroupPlayer(PApplet iApp){

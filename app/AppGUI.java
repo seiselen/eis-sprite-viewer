@@ -71,6 +71,10 @@ public class AppGUI {
     statesDDown.addOptions(states.toArray(null));
   }
 
+  public void clearDropdownOptions(){
+    statesDDown.reset();
+  }
+
 
   public void loadUIOBjects(){
     float xOff = 0; 
@@ -128,20 +132,31 @@ public class AppGUI {
       uim, bbox(vec(0,AppMain.appBar.getTopBarYOff()+8), vec(eWid,eDim))
     ).addChildren(
       UILabel.create(app, bbox(vec(96,yOff), vec(168,32)),
-        SpriteGroupPlayer.BLURB_CURCLIP, AppFont.TEXT, LabelType.TP, null
+        "Clip:", AppFont.TEXT, LabelType.TP, null
       ).setStyleProp("strk_transp", Integer.class, tspt)
       .setStyleProp("fill_transp", Integer.class, tspt)
       .setStyleProp("txt_anchor",  PosOri.class,  PosOri.RGT)
       .setStyleProp("txt_offset",  PVector.class, v.copy()),
 
-      UILabel.create(app, bbox(vec(96,yOff+32), vec(168,32)),
-        SpriteGroupPlayer.BLURB_CURSPRITE, AppFont.TEXT, LabelType.TP, null
+      UILabel.create(app, bbox(vec(96,yOff+=32), vec(168,32)),
+        "Sprite:", AppFont.TEXT, LabelType.TP, null
       ).setStyleProp("strk_transp", Integer.class, tspt)
       .setStyleProp("fill_transp", Integer.class, tspt)
       .setStyleProp("txt_anchor",  PosOri.class,  PosOri.RGT)
       .setStyleProp("txt_offset",  PVector.class, v.copy()),
 
-      UILabel.create(app, bbox(vec(96,yOff), vec(168,32)),
+      UILabel.create(app, bbox(vec(96,yOff+=32), vec(168,32)),
+        "Offset:", AppFont.TEXT, LabelType.TP, null
+      ).setStyleProp("strk_transp", Integer.class, tspt)
+      .setStyleProp("fill_transp", Integer.class, tspt)
+      .setStyleProp("txt_anchor",  PosOri.class,  PosOri.RGT)
+      .setStyleProp("txt_offset",  PVector.class, v.copy()),
+
+
+
+
+
+      UILabel.create(app, bbox(vec(96,yOff=0), vec(168,32)),
         null, AppFont.TEXT, LabelType.TP, new DispCurClip(appUtil)
       ).setStyleProp("strk_transp", Integer.class, tspt)
       .setStyleProp("fill_transp", Integer.class, tspt)
@@ -149,8 +164,15 @@ public class AppGUI {
       .setStyleProp("txt_offset",  PVector.class, v.copy()),
       
       
-      UILabel.create(app, bbox(vec(96,yOff+32), vec(168,32)),
+      UILabel.create(app, bbox(vec(96,yOff+=32), vec(168,32)),
         null, AppFont.TEXT, LabelType.TP, new DispCurSprt(appUtil)
+      ).setStyleProp("strk_transp", Integer.class, tspt)
+      .setStyleProp("fill_transp", Integer.class, tspt)
+      .setStyleProp("txt_anchor",  PosOri.class,  PosOri.LFT)
+      .setStyleProp("txt_offset",  PVector.class, v.copy()),
+
+      UILabel.create(app, bbox(vec(96,yOff+=32), vec(168,32)),
+        null, AppFont.TEXT, LabelType.TP, new DispCurSpOff(appUtil)
       ).setStyleProp("strk_transp", Integer.class, tspt)
       .setStyleProp("fill_transp", Integer.class, tspt)
       .setStyleProp("txt_anchor",  PosOri.class,  PosOri.LFT)
@@ -401,5 +423,14 @@ class DispCurSprt implements IUpdateCallback {
   public DispCurSprt(AppUtils iAppUtils){appUtils=iAppUtils;}
   public String getTxt(){
     return appUtils.hasCurSpriteGroup() ? appUtils.curSpriteGroup.getCurSpriteName() : "N/A";
+  }
+}
+
+
+class DispCurSpOff implements IUpdateCallback {
+  private AppUtils appUtils;
+  public DispCurSpOff(AppUtils iAppUtils){appUtils=iAppUtils;}
+  public String getTxt(){
+    return appUtils.hasCurSpriteGroup() ? appUtils.curSpriteGroup.getCurSpriteOff() : "N/A";
   }
 }

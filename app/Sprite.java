@@ -1,6 +1,7 @@
 package app;
 import PrEis.gui.PosOri;
 import PrEis.utils.Pgfx;
+import PrEis.utils.StringUtils;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
@@ -142,4 +143,10 @@ public class Sprite {
   private void renderNullImgText(){
     Pgfx.textWithShadow(app, "NULL PIMAGE", DBUG_RECT_STRK, 0, des);
   }
+
+  public String offToString(){
+    return StringUtils.wrapParens(StringUtils.concatAsCSSV(off.x,off.y));
+  }
+
+
 }
