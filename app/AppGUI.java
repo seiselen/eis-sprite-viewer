@@ -223,7 +223,6 @@ public class AppGUI {
   //=[FPS BUTTON GROUP]=========================================================
     eDim = 48; xPad = 8; xOff = 0;
 
-
     UIContainer.create(
       uim, vec(8,AppMain.CANVAS_TALL-88), vec(160,eDim)
     ).addChildren(
