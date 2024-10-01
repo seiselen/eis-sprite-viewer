@@ -157,15 +157,12 @@ public class SpriteUtils {
 
   /** @todo TEST THIS */
   public static SpriteClip[] getAllSpriteClipsOf(AppUtils au){
-    String[] stateNames = DataStructUtils.keyArrayOfJSONObj(au.JO_STATE_ANIMS);
-    
-    
+    String[] stateNames = DataStructUtils.keyArrayOfJSONObj(au.JO_STATE_ANIMS);    
     int nStates = stateNames.length;
     SpriteClip[] allClips = new SpriteClip[nStates];
     for (int i=0; i<nStates; i++){
       allClips[i] = rawStateDefToSpriteClip(au, stateNames[i],au.JO_STATE_ANIMS);
     }
-  
     return allClips;
   }
 
@@ -190,7 +187,7 @@ public class SpriteUtils {
 
   /** @todo TEST THIS */
   public static String[] frameLineToSpriteArray(AppUtils aUtil, String line){  
-    String[] components = line.trim().split("/s+");
+    String[] components = line.trim().split("\\s+");
     if(components.length != 3){return conserr_exp3CompDECStr(line);}
     String prefixStr = components[0];
     char[] suffixArr = components[1].toCharArray();

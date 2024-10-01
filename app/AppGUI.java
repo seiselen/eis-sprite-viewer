@@ -21,6 +21,7 @@ import PrEis.gui.UIContainer;
 import PrEis.gui.UIDropdown;
 import PrEis.gui.UILabel;
 import PrEis.gui.UIManager;
+import PrEis.gui.UIObject;
 import PrEis.gui.UIToggle;
 import PrEis.gui.PosOri;
 
@@ -41,8 +42,8 @@ public class AppGUI {
     app       = appUtil.app;
     labelFont = iLabelFont;
     glyphFont = iGlyphFont;
-    uim = new UIManager(app)
-    .injectFonts(iLabelFont, iGlyphFont);
+    uim = new UIManager(app);
+    UIObject.injectFonts(iLabelFont, iGlyphFont);
     initCustomGlyphs();
     loadUIOBjects();
   }
