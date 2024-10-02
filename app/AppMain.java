@@ -1,9 +1,11 @@
 package app;
 
 import PrEis.utils.FileSysUtils;
+import PrEis.utils.JAResourceUtil;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
+import processing.data.JSONObject;
 import processing.event.MouseEvent;
 
 import java.io.File;
@@ -15,12 +17,13 @@ public class AppMain  extends PApplet {
   public  static int CANVAS_WIDH = CANVAS_WIDE/2;
   public  static int CANVAS_TALH = CANVAS_TALL/2;
 
-  public  static int    FILL_CANVAS;
-  public  static PFont  TXTFONT;
-  public  static PFont  SYMFONT;
-  public  static PImage APPICON;
-  public  static PImage APPLOGO;
-  public  static PImage EISLOGO;
+  public  static int        FILL_CANVAS;
+  public  static PFont      TXTFONT;
+  public  static PFont      SYMFONT;
+  public  static PImage     APPICON;
+  public  static PImage     APPLOGO;
+  public  static PImage     EISLOGO;
+  public  static JSONObject SYMCMAP;
 
   public  static String assetPath;  
   public  static AppUtils appUtil;
@@ -43,6 +46,7 @@ public class AppMain  extends PApplet {
 
   /** @implNote <b>REMEMBER: ORDER ABSOLUTELY MATTERS HERE!!!</b> */
   public void setup(){
+    JAResourceUtil.app = this;
     noCursor();
     FILL_CANVAS = color(0);
 
@@ -101,13 +105,15 @@ public class AppMain  extends PApplet {
     appUtil.onSelectionMade(f);
   }
 
+
   /** Loads GUI fonts, images, etc.; i.e. NOT app targets! */
   public void loadAppAssets(){
-    TXTFONT = loadFont(fullpathOf(ResPath.TXTFONT));
-    SYMFONT = loadFont(fullpathOf(ResPath.SYMFONT));
+    TXTFONT = JAResourceUtil.getFontFromJAR("PrEis/assets/tit_web_bold_32.vlw");
+    SYMFONT = JAResourceUtil.getFontFromJAR("PrEis/assets/font_awe_48.vlw");
+    EISLOGO = JAResourceUtil.getImageFromJAR("PrEis/assets/eis_logo.png");
+    SYMCMAP = JAResourceUtil.getJSONObjectFromJAR("PrEis/assets/font_awe_char_codes.json");
     APPICON = loadImage(fullpathOf(ResPath.APPICON));
     APPLOGO = loadImage(fullpathOf(ResPath.APPLOGO));
-    EISLOGO = loadImage(fullpathOf(ResPath.EISLOGO));
   }
 
 

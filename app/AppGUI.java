@@ -5,7 +5,6 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PVector;
 import processing.data.IntDict;
-import processing.data.JSONObject;
 import processing.data.StringList;
 import PrEis.gui.AppFont;
 import PrEis.gui.ConfirmState;
@@ -49,10 +48,9 @@ public class AppGUI {
   }
 
   private void initCustomGlyphs(){
-    JSONObject jo = app.loadJSONObject(AppMain.fullpathOf(ResPath.SYMCMAP));
     glyphDict = new IntDict();
-    String[] keys = DataStructUtils.keyArrayOfJSONObj(jo);
-    for (String k : keys){glyphDict.add(k,jo.getInt(k));}
+    String[] keys = DataStructUtils.keyArrayOfJSONObj(AppMain.SYMCMAP);
+    for (String k : keys){glyphDict.add(k,AppMain.SYMCMAP.getInt(k));}
   }
 
   private String glyphChar(String n){return ""+(char)glyphDict.get(n);}
