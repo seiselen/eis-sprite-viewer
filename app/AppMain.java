@@ -2,6 +2,7 @@ package app;
 
 import PrEis.utils.FileSysUtils;
 import PrEis.utils.JAResourceUtil;
+import PrEis.utils.PrEisRes;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
@@ -108,10 +109,10 @@ public class AppMain  extends PApplet {
 
   /** Loads GUI fonts, images, etc.; i.e. NOT app targets! */
   public void loadAppAssets(){
-    TXTFONT = JAResourceUtil.getFontFromJAR("PrEis/assets/tit_web_bold_32.vlw");
-    SYMFONT = JAResourceUtil.getFontFromJAR("PrEis/assets/font_awe_48.vlw");
-    EISLOGO = JAResourceUtil.getImageFromJAR("PrEis/assets/eis_logo.png");
-    SYMCMAP = JAResourceUtil.getJSONObjectFromJAR("PrEis/assets/font_awe_char_codes.json");
+    TXTFONT = JAResourceUtil.getFontFromJAR(PrEisRes.TXT_FONT);
+    SYMFONT = JAResourceUtil.getFontFromJAR(PrEisRes.SYM_FONT);
+    EISLOGO = JAResourceUtil.getImageFromJAR(PrEisRes.EIS_LOGO);
+    SYMCMAP = JAResourceUtil.getJSONObjectFromJAR(PrEisRes.SYM_CMAP);
     APPICON = loadImage(fullpathOf(ResPath.APPICON));
     APPLOGO = loadImage(fullpathOf(ResPath.APPLOGO));
   }
