@@ -2,6 +2,7 @@ package app;
 
 import PrEis.utils.BBox;
 import PrEis.utils.Pgfx;
+import PrEis.utils.GridManager;
 import processing.core.PApplet;
 
 class HUDManager {
@@ -14,11 +15,23 @@ class HUDManager {
   public float curScalar;
 
   AppMain app;
+  GridManager grid;
   
   public HUDManager(AppMain iApp){
     app = iApp;
     dims = new BBox(DEF_HUD_WIDE,DEF_HUD_TALL);
     curScalar = DEF_SCALAR;
+
+    grid = new GridManager(iApp, dims, AppMain.MONFONT)
+    .setShowGrid(false)
+    .setCellSize(8)
+    .setTextSiz(8)
+    .setStrkWgt(1)
+    .setScalar(DEF_SCALAR)
+    .setStrkCol(app.color(255,255,0,128))
+    .setTextCol(app.color(255,255,0))
+    .setDeltaTic(2)
+    ;
   }
 
 //[GETTER FUNCTIONS]------------------------------------------------------------  
@@ -33,33 +46,53 @@ class HUDManager {
   public float getHUD_spriteY(int offY){return getHUD_topLeftY()-(offY*curScalar);}
   public float getHUD_spriteY(){return getHUD_topLeftY();}
 //[SETTER FUNCTIONS]------------------------------------------------------------
-  public void setScalar(float nScalar){curScalar = PApplet.constrain(nScalar, MIN_SCALAR, MAX_SCALAR);}  
+  public void setScalar(float nScalar){
+    curScalar = PApplet.constrain(nScalar, MIN_SCALAR, MAX_SCALAR);
+    grid.setScalar(curScalar);
+  }  
 //[TOSTRING & TOCONSOLE FUNCTIONS]----------------------------------------------
   public String scalarToString(){return "Current Scalar = ["+curScalar+"]";}  
   public void scalarToConsole(){System.out.println(scalarToString());}  
 
+//[UI FUNCTIONS]----------------------------------------------------------------
+  public void onKeyPressed(){
+    if(app.key=='g'||app.key=='G'){grid.setShowGrid();}
+  }
+
+
+
+
+//[RENDER FUNCTIONS]------------------------------------------------------------
   public void render(){
     app.rectMode(PApplet.CORNER);
+    drawGrid();
     drawHUD_bounds();
     drawHUD_mainMidptLines();
     drawHUD_statusBarLines();
   }
-  
-  public void drawHUD_bounds(){
+
+  private void drawGrid(){
+    app.push();
+    app.translate(getHUD_topLeftX(), getHUD_topLeftY());
+    grid.render();
+    app.pop();
+  }
+
+  private void drawHUD_bounds(){
     app.noFill();
     app.stroke(255);
     app.strokeWeight(2);
     app.rect(getHUD_topLeftX(), getHUD_topLeftY(), getHUD_wide(), getHUD_tall());
   }
   
-  public void drawHUD_mainMidptLines(){
+  private void drawHUD_mainMidptLines(){
     app.noFill();
     app.stroke(216);
     app.strokeWeight(1);
     Pgfx.linev(app, getHUD_topLeftX(160),getHUD_topLeftY(),getHUD_topLeftY(158));
     Pgfx.lineh(app, getHUD_topLeftX(), getHUD_topLeftX(320), getHUD_topLeftY(100));}
   
-  public void drawHUD_statusBarLines(){
+    private void drawHUD_statusBarLines(){
     app.noFill();
     app.stroke(192);
     app.strokeWeight(1);

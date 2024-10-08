@@ -6,6 +6,7 @@ import processing.data.JSONObject;
 import processing.data.StringList;
 import PrEis.utils.Cons;
 import PrEis.utils.StringUtils;
+import PrEis.utils.ZScriptUtils;
 import PrEis.utils.Cons.Act;
 import PrEis.utils.Cons.Err;
 
@@ -41,12 +42,12 @@ public class SpriteGroup {
 
   private void installSprites(){    
     if(allSpritePKIDs==null || allSpritePKIDs.length==0){Cons.err(Err.NULL_VALUE);}
-    else{for (String pkid : allSpritePKIDs){sprDict.put(pkid,SpriteUtils.spriteWithName(appUtil, pkid));}
+    else{for (String pkid : allSpritePKIDs){sprDict.put(pkid,Sprite.withName(appUtil, pkid));}
     }
   }
   
   public void installOffsets(JSONObject inOffs){
-    HashMap<String,PVector> offs = SpriteUtils.offsetJSONToOffsetMap(inOffs);
+    HashMap<String,PVector> offs = ZScriptUtils.offsetJSONToOffsetMap(inOffs);
 
     PVector buffVec;
     Sprite buffSpr;
@@ -61,13 +62,12 @@ public class SpriteGroup {
         else{buffSpr.setOff(buffVec);}
       }
     }
-
   }
  
   public SpriteGroup extractOffsets(){
     PVector buffVec; Sprite buffSpr;
     for(String s : allSpritePKIDs){
-      buffVec = SpriteUtils.extractSpriteOffset(appUtil, s); 
+      buffVec = ZScriptUtils.extractSpriteOffset(appUtil.app, appUtil.getSpriteDirpath(), s); 
       if(buffVec==null){
         Cons.warn("Warning: Offset cannot be found for sprite '"+s+"'. Leaving at init value i.e. {0,0}");
       }
@@ -103,8 +103,6 @@ public class SpriteGroup {
     setCurClipToCurIdx();
   }
 
-
-  
   public void setCurClipByName(String name){
     int idx = getIndexByName(name);
     if(idx==-1){
@@ -123,25 +121,13 @@ public class SpriteGroup {
     curClip = animClips[curClipIdx];
   }
 
+  public void setCurClipToCurIdx(){curClip = animClips[curClipIdx];}
 
-  public void setCurClipToCurIdx(){
-    curClip = animClips[curClipIdx];
-  }
-
-
-
-    
   public SpriteClip getCurAnimClip(){return curClip;}
 
-  public String getCurClipName(){
-    if(curClip==null){return "N/A";}    
-    return curClip.getClipName();
-  }
+  public String getCurClipName(){if(curClip==null){return "N/A";} return curClip.getClipName();}
   
-  public String getCurSpriteName(){
-    if(curClip==null){return "N/A";}
-    return curClip.getCurSpriteName();  
-  }
+  public String getCurSpriteName(){if(curClip==null){return "N/A";} return curClip.getCurSpriteName();}
 
   public String getCurSpriteOff(){
     if(curClip==null){return "N/A";}

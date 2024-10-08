@@ -71,7 +71,7 @@ public class AppUtils {
     }
 
     
-    curAnimClips = SpriteUtils.getAllSpriteClipsOf(this);
+    curAnimClips = SpriteClip.getAllSpriteClipsOf(this);
 
     AppMain.appGUI.addOptionsToDropdown();
 

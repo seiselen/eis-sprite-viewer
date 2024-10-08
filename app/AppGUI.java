@@ -65,7 +65,7 @@ public class AppGUI {
 
 
   public void addOptionsToDropdown(){
-    StringList states = new StringList(SpriteUtils.animClipsToClipNames(appUtil.curAnimClips));
+    StringList states = new StringList(SpriteClip.animClipsToClipNames(appUtil.curAnimClips));
     states.sort();
     statesDDown.addOptions(states.toArray(null));
   }
@@ -179,10 +179,10 @@ public class AppGUI {
     );
 
   //=[ZOOM BUTTONS GROUP]===========================================================
-    yPad = 8; eDim = 48;
+    yPad = 8; eDim = 48; yOff=0;
 
     UIContainer.create(
-      uim, bbox(vec(AppMain.CANVAS_WIDE-56,AppMain.CANVAS_TALL-320), vec(eDim,232))
+      uim, bbox(vec(AppMain.CANVAS_WIDE-56,AppMain.CANVAS_TALL-256), vec(eDim,224))
     ).addChildren(
       UILabel.create(app, bbox(vec(0,yOff), vec(eDim,eDim)),
         null, AppFont.TEXT, LabelType.OP, new DispZoomLevAction(AppMain.hudManager)
@@ -204,7 +204,6 @@ public class AppGUI {
         glyphChar("gZoomOut"), AppFont.GLYPH, new ZoomOutAction(AppMain.hudManager)
       )
       .setTitle("Zoom Out (Decrease Scalar)")
-      
       .castTo(UIClick.class)
     );
 
@@ -283,7 +282,7 @@ class DropdownSelectAnim implements ISelectAction {
   public void OnSelection(String selOpt) {
     if(!appUtils.hasCurSpriteGroup()){return;}    
     /*> Equivalent to: "Oi Guv... Ave Ye Got A SpriteClip Of Dis Name?" */
-    if(appUtils.getSpriteGroup().getIndexByName(selOpt)>0){
+    if(appUtils.getSpriteGroup().getIndexByName(selOpt)>-1){
       appUtils.curSpriteGroup.setCurClipByName(selOpt);
     }
     System.out.println("Selected: ["+selOpt+"]"); //> (temporary?) else remove it

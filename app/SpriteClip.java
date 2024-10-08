@@ -1,5 +1,10 @@
 package app;
+import java.util.ArrayList;
+import PrEis.utils.DataStructUtils;
+import PrEis.utils.FormatUtils;
 import PrEis.utils.StringUtils;
+import PrEis.utils.ZScriptUtils;
+import processing.data.JSONObject;
 import processing.data.StringList;
 
 /** 
@@ -54,34 +59,50 @@ public class SpriteClip {
     return pkids.toArray();
   }
   
+
+
+
+  /*=[ STATIC UTIL GETTERS ]----------------------------------------------------
+  +===========================================================================*/  
+
+  public static String[] animClipsToClipNames(SpriteClip[] clips){
+    String[] ret = new String[clips.length];
+    for(int i=0; i<clips.length; i++){
+      ret[i] = clips[i].getClipName();
+    } 
+    return ret;
+  }
+
+  /** @todo TEST THIS */
+  public static SpriteClip[] getAllSpriteClipsOf(AppUtils au){
+    String[] stateNames = DataStructUtils.keyArrayOfJSONObj(au.JO_STATE_ANIMS);    
+    int nStates = stateNames.length;
+    SpriteClip[] allClips = new SpriteClip[nStates];
+    for (int i=0; i<nStates; i++){
+      allClips[i] = rawStateDefToSpriteClip(au, stateNames[i],au.JO_STATE_ANIMS);
+    }
+    return allClips;
+  }
+
+  /** @todo TEST THIS */
+  public static SpriteClip rawStateDefToSpriteClip(AppUtils appUtils, String stateName, JSONObject allStates){
+    String[] stateSeqArr = allStates.getJSONArray(stateName).toStringArray();
+    ArrayList<String> allFrames = new ArrayList<String>();
+    for (int i=0; i<stateSeqArr.length; i++){
+      java.util.Collections.addAll(allFrames, ZScriptUtils.frameLineToSpriteArray(stateSeqArr[i]));}
+    return new SpriteClip(stateName, FormatUtils.strArrListToStrArr(allFrames));
+  }
+
+  /*=[ TOSTRING/TOCONSOLE ]-----------------------------------------------------
+  +===========================================================================*/
+
   public void toConsole(){toConsole(0);}
   public void toConsole(int paddingLen){
     String pfix = StringUtils.wrapWith('\'', clipName);
     if(paddingLen<1){pfix = pfix+" : ";}
     else{pfix = StringUtils.padR(pfix, paddingLen)+" : ";}
     System.out.print(pfix);
-    printSpriteSeqStrArr(spriteIDs,TOCONSOLE_WRAP_CLIP,TOCONSOLE_WRAP_FRMS,TOCONSOLE_WITH_CSV);
+    ZScriptUtils.printSpriteSeqStrArr(spriteIDs,TOCONSOLE_WRAP_CLIP,TOCONSOLE_WRAP_FRMS,TOCONSOLE_WITH_CSV);
   }
-
-  /**
-   * @param wrapSeq wrap set of sprites with curly brackets? e.g. "{PLSAA, PLSAB}" -vs- "PLSAA, PLSAB"
-   * @param wrapFrm wrap sprites between parenthesis chars? e.g. "(PLSAA)" -vs- "PLSAA"  
-   * @param sepSCSV separate sprites with comma as well as space? e.g. "{PLSAA, PLSAB}" -vs- "{PLSAA PLSAB}"
-   * @todo test this (and its overload) at some point
-   */
-  public static void printSpriteSeqStrArr(String[] arr, boolean wrapSeq, boolean wrapFrm, boolean sepSCSV){
-    String str = "";
-    for(int i=0; i<arr.length; i++){
-      str += wrapFrm ? StringUtils.wrapParens(arr[i]) : arr[i];
-      if(i<arr.length-1){str += sepSCSV ? ", " : " ";}
-    }
-    if(wrapSeq){str = StringUtils.wrapWith('{',str);}
-    System.out.println(str);
-  }
-
-  public static void printSpriteSeqStrArr(String[] arr){
-    printSpriteSeqStrArr(arr,true,true,true);
-  }
-
 
 }

@@ -21,6 +21,7 @@ public class AppMain  extends PApplet {
   public  static int        FILL_CANVAS;
   public  static PFont      TXTFONT;
   public  static PFont      SYMFONT;
+  public  static PFont      MONFONT;
   public  static PImage     APPICON;
   public  static PImage     APPLOGO;
   public  static PImage     EISLOGO;
@@ -93,7 +94,11 @@ public class AppMain  extends PApplet {
   }
 
   public void keyPressed(){
-    switch(key){case 'q' : case 'Q': exit(); return;}
+    switch(key){
+      case 'q' : case 'Q': exit(); return;
+      case 'o' : case 'O': Sprite.RENDER_DBUG_RECT=!Sprite.RENDER_DBUG_RECT;
+    }
+    hudManager.onKeyPressed();
     player.onKeyPressed();
   }
 
@@ -111,6 +116,7 @@ public class AppMain  extends PApplet {
   public void loadAppAssets(){
     TXTFONT = JAResourceUtil.getFontFromJAR(PrEisRes.TXT_FONT);
     SYMFONT = JAResourceUtil.getFontFromJAR(PrEisRes.SYM_FONT);
+    MONFONT = JAResourceUtil.getFontFromJAR(PrEisRes.MON_FONT);
     EISLOGO = JAResourceUtil.getImageFromJAR(PrEisRes.EIS_LOGO);
     SYMCMAP = JAResourceUtil.getJSONObjectFromJAR(PrEisRes.SYM_CMAP);
     APPICON = loadImage(fullpathOf(ResPath.APPICON));

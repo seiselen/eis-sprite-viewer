@@ -1,7 +1,10 @@
 package app;
 import PrEis.gui.PosOri;
+import PrEis.utils.Cons;
+import PrEis.utils.PImageUtils;
 import PrEis.utils.Pgfx;
 import PrEis.utils.StringUtils;
+import PrEis.utils.ZScriptUtils;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
@@ -16,7 +19,7 @@ import processing.core.PVector;
 public class Sprite {
   private static int DBUG_RECT_STRK;
   private static int DBUG_RECT_PAD;
-  private static boolean RENDER_DBUG_RECT;
+  public static boolean RENDER_DBUG_RECT;
 
   /** {@link PApplet} of application this is being instantiated within.  */
   PApplet app;
@@ -122,6 +125,36 @@ public class Sprite {
     return fp.substring(fullPath.length()-10);
   }
 
+
+  /*=[ STATIC UTIL GETTERS ]----------------------------------------------------
+  +===========================================================================*/  
+
+  public static Sprite withName(AppUtils iAppUtils, String sName){
+    String sPath = ZScriptUtils.findSprite(iAppUtils.getSpriteDirpath(), sName)[0];
+    if(sPath==null){
+      Cons.err("Cannot find sprite '"+sName+"' at location '"+iAppUtils.getSpriteDirpath().toString()+"'");
+      return null;
+    }
+    PImage spImg = PImageUtils.withFilepath(iAppUtils.app, sPath);
+    if(spImg==null){
+      Cons.err("Cannot load sprite '"+sName+"' at location '"+sPath+"'");
+      return null;
+    }
+    Sprite sprite = new Sprite(iAppUtils.app, sName, sPath, spImg);
+    return sprite;
+  }
+
+
+  /*=[ TOSTRING/TOCONSOLE ]-----------------------------------------------------
+  +===========================================================================*/
+
+  public String offToString(){
+    return StringUtils.wrapParens(StringUtils.concatAsCSSV(off.x,off.y));
+  }
+
+  /*=[ RENDER FUNCTIONS ]-------------------------------------------------------
+  +===========================================================================*/
+
   public void render(){
     if(RENDER_DBUG_RECT){renderDebugRect();}
     if(pImage==null){renderNullImgText();}
@@ -143,10 +176,5 @@ public class Sprite {
   private void renderNullImgText(){
     Pgfx.textWithShadow(app, "NULL PIMAGE", DBUG_RECT_STRK, 0, des);
   }
-
-  public String offToString(){
-    return StringUtils.wrapParens(StringUtils.concatAsCSSV(off.x,off.y));
-  }
-
 
 }
