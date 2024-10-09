@@ -4,6 +4,7 @@ import PrEis.utils.BBox;
 import PrEis.utils.Pgfx;
 import PrEis.utils.GridManager;
 import processing.core.PApplet;
+import processing.core.PVector;
 
 class HUDManager {
   private static final float DEF_HUD_WIDE = 320;
@@ -12,6 +13,7 @@ class HUDManager {
   private static final float MIN_SCALAR = 1f;
   private static final float MAX_SCALAR = 4f;
   private BBox dims;
+  private PVector vizOff;
   public float curScalar;
 
   AppMain app;
@@ -20,12 +22,13 @@ class HUDManager {
   public HUDManager(AppMain iApp){
     app = iApp;
     dims = new BBox(DEF_HUD_WIDE,DEF_HUD_TALL);
+    vizOff = new PVector();
     curScalar = DEF_SCALAR;
 
     grid = new GridManager(iApp, dims, AppMain.MONFONT)
     .setShowGrid(false)
     .setCellSize(8)
-    .setTextSiz(8)
+    .setTextSiz(16)
     .setStrkWgt(1)
     .setScalar(DEF_SCALAR)
     .setStrkCol(app.color(255,255,0,128))
@@ -35,21 +38,44 @@ class HUDManager {
   }
 
 //[GETTER FUNCTIONS]------------------------------------------------------------  
-  public float getHUD_topLeftX(int pxOff){return (AppMain.CANVAS_WIDH-(dims.wideh()*curScalar))+(pxOff*curScalar);}
-  public float getHUD_topLeftX(){return (AppMain.CANVAS_WIDH-(dims.wideh()*curScalar))+(curScalar);}  
-  public float getHUD_topLeftY(int pxOff){return (AppMain.CANVAS_TALH-(dims.tallh()*curScalar))+(pxOff*curScalar);}  
-  public float getHUD_topLeftY(){return (AppMain.CANVAS_TALH-(dims.tallh()*curScalar))+(curScalar);}  
+  public float getHUD_topLeftX(int pxOff){return (AppMain.CANVAS_WIDH-(dims.wideh()*curScalar))+(pxOff*curScalar)+vizOff.x;}
+  
+  public float getHUD_topLeftX(){return (AppMain.CANVAS_WIDH-(dims.wideh()*curScalar))+(curScalar)+vizOff.x;}  
+  
+  public float getHUD_topLeftY(int pxOff){return (AppMain.CANVAS_TALH-(dims.tallh()*curScalar))+(pxOff*curScalar)+vizOff.y;}  
+  
+  public float getHUD_topLeftY(){return (AppMain.CANVAS_TALH-(dims.tallh()*curScalar))+(curScalar)+vizOff.y;}  
+  
   public float getHUD_wide(){return dims.wide()*curScalar;}
+  
   public float getHUD_tall(){return dims.tall()*curScalar;}
+  
   public float getHUD_spriteX(int offX){return getHUD_topLeftX()-(offX*curScalar);}
+  
   public float getHUD_spriteX(){return getHUD_topLeftX();}
+  
   public float getHUD_spriteY(int offY){return getHUD_topLeftY()-(offY*curScalar);}
+  
   public float getHUD_spriteY(){return getHUD_topLeftY();}
+
 //[SETTER FUNCTIONS]------------------------------------------------------------
+
   public void setScalar(float nScalar){
     curScalar = PApplet.constrain(nScalar, MIN_SCALAR, MAX_SCALAR);
     grid.setScalar(curScalar);
   }  
+
+
+  public HUDManager setVizOffΘ(PVector nOff){
+    setVizOff(nOff); return this;
+  }
+
+  public void setVizOff(PVector nOff){
+    if(nOff.mag()==0){return;}
+    vizOff=nOff;
+  }
+
+
 //[TOSTRING & TOCONSOLE FUNCTIONS]----------------------------------------------
   public String scalarToString(){return "Current Scalar = ["+curScalar+"]";}  
   public void scalarToConsole(){System.out.println(scalarToString());}  

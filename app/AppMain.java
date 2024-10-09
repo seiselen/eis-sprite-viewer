@@ -6,6 +6,7 @@ import PrEis.utils.PrEisRes;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
+import processing.core.PVector;
 import processing.data.JSONObject;
 import processing.event.MouseEvent;
 
@@ -56,7 +57,7 @@ public class AppMain  extends PApplet {
     loadAppAssets();
     appUtil    = new AppUtils(this);
     fpsManager = new FPSManager(this).bindFont(TXTFONT);
-    hudManager = new HUDManager(this);
+    hudManager = new HUDManager(this).setVizOffΘ(new PVector(0,32));
     appBar     = new AppBar(this, APPLOGO, EISLOGO);
     custCursor = new CustomCursor(this);
     player     = new SpriteGroupPlayer(this);
@@ -96,7 +97,7 @@ public class AppMain  extends PApplet {
   public void keyPressed(){
     switch(key){
       case 'q' : case 'Q': exit(); return;
-      case 'o' : case 'O': Sprite.RENDER_DBUG_RECT=!Sprite.RENDER_DBUG_RECT;
+      case 'o' : case 'O': player.toggleDispSpriteBounds();
     }
     hudManager.onKeyPressed();
     player.onKeyPressed();

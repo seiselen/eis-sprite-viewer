@@ -19,7 +19,7 @@ import processing.core.PVector;
 public class Sprite {
   private static int DBUG_RECT_STRK;
   private static int DBUG_RECT_PAD;
-  public static boolean RENDER_DBUG_RECT;
+  public static boolean RENDER_DBUG_RECT = false;
 
   /** {@link PApplet} of application this is being instantiated within.  */
   PApplet app;
@@ -67,9 +67,8 @@ public class Sprite {
   PVector des;
 
   public Sprite(PApplet iApp, String iName, String iFPath, PImage iPImage){
-    DBUG_RECT_STRK = iApp.color(0,255,0,128);
+    DBUG_RECT_STRK = iApp.color(0,255,0);
     DBUG_RECT_PAD = 8;
-    RENDER_DBUG_RECT = true;
     app      = iApp;
     pos      = new PVector();
     off      = new PVector();
@@ -155,18 +154,30 @@ public class Sprite {
   /*=[ RENDER FUNCTIONS ]-------------------------------------------------------
   +===========================================================================*/
 
+
+
+  
+  
   public void render(){
-    if(RENDER_DBUG_RECT){renderDebugRect();}
+    if(RENDER_DBUG_RECT){renderDebugRect(1);}
     if(pImage==null){renderNullImgText();}
     else{renderSprite();}
   }
-
-  private void renderDebugRect(){
-    Pgfx.strokenofill(app, DBUG_RECT_STRK);
-    app.strokeWeight(2);
+  
+  
+  public void renderDebugRect(float scalar){
     app.rectMode(PApplet.CORNER);
-    app.rect(des.x-DBUG_RECT_PAD,des.y-DBUG_RECT_PAD,dim.x+DBUG_RECT_PAD,dim.y+DBUG_RECT_PAD);
+    app.strokeWeight(1);
+    Pgfx.strokenofill(app, DBUG_RECT_STRK);
+    app.rect(
+      (des.x-DBUG_RECT_PAD)*scalar,
+      (des.y-DBUG_RECT_PAD)*scalar,
+      (dim.x+DBUG_RECT_PAD)*scalar,
+      (dim.y+DBUG_RECT_PAD)*scalar);
   }
+
+
+
 
   private void renderSprite(){
     app.imageMode(PApplet.CORNER);

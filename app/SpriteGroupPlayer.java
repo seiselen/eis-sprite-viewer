@@ -8,6 +8,7 @@ public class SpriteGroupPlayer {
   boolean playing;
   boolean paused;
   boolean stopped;
+  boolean dispSpriteBounds;
 
   /** log whenever mode changes i.e. {PLAY/PAUSE/STOP} */
   boolean logBehaviorChange = false; 
@@ -19,6 +20,7 @@ public class SpriteGroupPlayer {
     
   public SpriteGroupPlayer(PApplet iApp){
     app = iApp;
+    dispSpriteBounds = false;
     onStop();
   }
   
@@ -26,6 +28,11 @@ public class SpriteGroupPlayer {
     onStop();
     if(group==null){Cons.err(Err.NULL_INPUT); Cons.err("sprite group is null");}
     else{spriteGroup=group;} return this;
+  }
+
+
+  public void toggleDispSpriteBounds(){
+    dispSpriteBounds = !dispSpriteBounds;
   }
   
   public void onKeyPressed(){
@@ -65,25 +72,15 @@ public class SpriteGroupPlayer {
   }
   
   public void render(){  
+    if(spriteGroup==null||spriteGroup.sprDict==null||spriteGroup.curClip==null){return;}
+    curSprite = spriteGroup.getCurSpriteObj();
+
     app.push();
       app.translate(AppMain.hudManager.getHUD_spriteX(),AppMain.hudManager.getHUD_spriteY());
+      if(dispSpriteBounds){curSprite.renderDebugRect(AppMain.hudManager.curScalar);}
       app.scale(AppMain.hudManager.curScalar);
-      renderSprite();
+      curSprite.render();
     app.pop();
   }
 
-
-
-
-  public void renderSprite(){
-
-    if(spriteGroup==null||spriteGroup.sprDict==null||spriteGroup.curClip==null){ 
-      return;
-    }
-
-    curSprite = spriteGroup.getCurSpriteObj();
-    //if(curSprite==null){System.err.println("um..."); return;}    
-    curSprite.render();
-  }
-  
 }

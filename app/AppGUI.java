@@ -182,7 +182,7 @@ public class AppGUI {
     yPad = 8; eDim = 48; yOff=0;
 
     UIContainer.create(
-      uim, bbox(vec(AppMain.CANVAS_WIDE-56,AppMain.CANVAS_TALL-256), vec(eDim,224))
+      uim, bbox(vec(AppMain.CANVAS_WIDE-56,AppMain.CANVAS_TALL-264), vec(eDim,224))
     ).addChildren(
       UILabel.create(app, bbox(vec(0,yOff), vec(eDim,eDim)),
         null, AppFont.TEXT, LabelType.OP, new DispZoomLevAction(AppMain.hudManager)
