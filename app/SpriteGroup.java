@@ -15,10 +15,12 @@ public class SpriteGroup {
   String filePath;
   SpriteClip[] animClips;
   SpriteClip curClip;
-  int curClipIdx;
+  int curClipIdx = -1;
   String[] allSpritePKIDs;
   HashMap<String,Sprite> sprDict;
   AppUtils appUtil;
+
+  Sprite buff;
 
   public SpriteGroup(AppUtils iAppUtils){
     sprDict = new HashMap<String,Sprite>();
@@ -121,6 +123,10 @@ public class SpriteGroup {
     curClip = animClips[curClipIdx];
   }
 
+  public int getCurClipIdx(){return curClipIdx;}
+
+  public String clipProgressToString(){return curClip==null ? "N/A" : curClip.getClipProgress();}
+
   public void setCurClipToCurIdx(){curClip = animClips[curClipIdx];}
 
   public SpriteClip getCurAnimClip(){return curClip;}
@@ -130,9 +136,8 @@ public class SpriteGroup {
   public String getCurSpriteName(){if(curClip==null){return "N/A";} return curClip.getCurSpriteName();}
 
   public String getCurSpriteOff(){
-    if(curClip==null){return "N/A";}
-    //> RISKY as no `null` protection because I'm too stupid to def a local var
-    return sprDict.get(getCurSpriteName()).offToString();
+    if(curClip==null||(buff=sprDict.get(getCurSpriteName()))==null){return "N/A";}
+    return buff.offToString();
   }
 
 

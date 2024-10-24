@@ -129,7 +129,10 @@ public class Sprite {
   +===========================================================================*/  
 
   public static Sprite withName(AppUtils iAppUtils, String sName){
-    String sPath = ZScriptUtils.findSprite(iAppUtils.getSpriteDirpath(), sName)[0];
+    String sPath = null;
+    try {
+      sPath = ZScriptUtils.findSprite(iAppUtils.getSpriteDirpath(), sName)[0];
+    } catch (Exception e) {}
     if(sPath==null){
       Cons.err("Cannot find sprite '"+sName+"' at location '"+iAppUtils.getSpriteDirpath().toString()+"'");
       return null;

@@ -3,6 +3,7 @@ package app;
 import PrEis.utils.FileSysUtils;
 import PrEis.utils.JAResourceUtil;
 import PrEis.utils.PrEisRes;
+import PrEis.utils.VFPSUtil;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
@@ -32,7 +33,7 @@ public class AppMain  extends PApplet {
   public  static AppUtils appUtil;
   public  static AppGUI appGUI;
   public  static HUDManager hudManager;
-  public  static FPSManager fpsManager;
+  public  static VFPSUtil fpsManager;
   public  static AppBar appBar;
   public  static CustomCursor custCursor;
   public  static SpriteGroupPlayer player;
@@ -56,7 +57,7 @@ public class AppMain  extends PApplet {
     initAssetPath();
     loadAppAssets();
     appUtil    = new AppUtils(this);
-    fpsManager = new FPSManager(this).bindFont(TXTFONT);
+    fpsManager = new VFPSUtil(this);
     hudManager = new HUDManager(this).setVizOffΘ(new PVector(0,32));
     appBar     = new AppBar(this, APPLOGO, EISLOGO);
     custCursor = new CustomCursor(this);
@@ -75,7 +76,7 @@ public class AppMain  extends PApplet {
   /** @implNote per usual... <b>ORDER <i>(likely)</i> COUNTS!</b> */
   public void update(){
     appGUI.update();
-    player.update();
+    if(fpsManager.isActiveFrame()){player.update();}
     custCursor.update();
   }
 
@@ -85,7 +86,6 @@ public class AppMain  extends PApplet {
     appBar.render();
     hudManager.render();
     player.render();
-    fpsManager.dispFPS();
     appGUI.render();
     custCursor.render();
   }
