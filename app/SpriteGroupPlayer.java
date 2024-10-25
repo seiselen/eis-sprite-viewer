@@ -38,8 +38,8 @@ public class SpriteGroupPlayer {
   public void onKeyPressed(){
     if(paused){
       switch(app.keyCode){
-      case PApplet.LEFT : spriteGroup.curClipNextFrame(); return;
-      case PApplet.RIGHT : spriteGroup.curClipPrevFrame(); return;  
+      case PApplet.LEFT : spriteGroup.curClipPrevFrame(); return;
+      case PApplet.RIGHT : spriteGroup.curClipNextFrame(); return;  
     }
     }
     switch(app.keyCode){

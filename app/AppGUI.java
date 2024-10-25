@@ -68,6 +68,7 @@ public class AppGUI {
     StringList states = new StringList(SpriteClip.animClipsToClipNames(appUtil.curAnimClips));
     states.sort();
     statesDDown.addOptions(states.toArray(null));
+    statesDDown.sortByLabel(); // see if this works, `states.sort()` should have? but seems not to
   }
 
   public void clearDropdownOptions(){
